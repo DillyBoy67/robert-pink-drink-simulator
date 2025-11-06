@@ -1,0 +1,129 @@
+body {
+  background: linear-gradient(135deg, #ffb6c1, #ff6f91);
+  font-family: Comic Sans MS, sans-serif;
+  text-align: center;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin-top: 30px;
+  font-size: 2.5em;
+  text-shadow: 2px 2px #00000055;
+}
+
+.game-container {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  width: 400px;
+  max-width: 90%;
+  margin: 30px auto;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+img {
+  width: 150px;
+  border-radius: 15px;
+  border: 3px solid #fff;
+  margin-bottom: 10px;
+}
+
+#drinkInput {
+  padding: 10px;
+  width: 80%;
+  font-size: 1.2em;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  text-align: center;
+}
+
+#timer, #score {
+  font-size: 1.4em;
+  margin: 10px 0;
+}
+
+button {
+  background: #ff4f7b;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #ff1e56;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.shop {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  width: 400px;
+  max-width: 90%;
+  margin: 20px auto;
+  border-radius: 20px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.footer {
+  font-size: 0.9em;
+  margin-top: 30px;
+  opacity: 0.8;
+}
+
+/* Time Stop UI */
+.time-stop-container {
+  position: absolute;
+  top: 50%;
+  right: -200px;
+  transform: translateY(-50%);
+  text-align: left;
+  width: 180px;
+}
+
+.time-stop-container h3 {
+  margin-bottom: 5px;
+}
+
+.time-stop-container button {
+  width: 100%;
+  margin-top: 5px;
+}
+
+/* Skin Menu - bottom-left */
+#skinMenuContainer {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  text-align: left;
+  width: 200px;
+}
+
+#skinMenuContainer h4 {
+  margin: 5px 0;
+}
+
+#skinMenuContainer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#skinMenuContainer li {
+  cursor: pointer;
+  margin-bottom: 3px;
+}

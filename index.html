@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robert "Drink" Simulator - Robert Games</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Robert "Drink" Simulator 🥤</h1>
+
+  <div class="game-container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Pink_drink.jpg/640px-Pink_drink.jpg" alt="Pink Drink" id="drinkImg">
+    <div id="timer">⏰ Time: 60</div>
+    <div id="score">Score: 0</div>
+    <input type="text" id="drinkInput" placeholder="Type 'drink' here..." disabled>
+    <br>
+    <button id="startBtn">Start Game</button>
+
+    <!-- Time Stop section -->
+    <div class="time-stop-container">
+      <h3>⏸️ Time Stop</h3>
+      <p id="timeStopInfo">Level: 0 | Cost: 150 pts</p>
+      <button id="buyTimeStopBtn">Buy/Upgrade</button>
+      <button id="activateTimeStopBtn" disabled>Activate</button>
+    </div>
+  </div>
+
+  <div class="shop">
+    <h2>🛒 Upgrade Shop</h2>
+    <div class="upgrade">
+      <button id="addSecondBtn">+1 Second (Cost: 5 points)</button>
+    </div>
+    <div class="upgrade">
+      <button id="addPointBtn">+1 Point per Drink (Cost: 25 points)</button>
+    </div>
+  </div>
+
+  <!-- Skin Menu -->
+  <div id="skinMenuContainer">
+    <button id="gambleSkinBtn">🎰 Gamble Skin (1000 pts)</button>
+    <h4>Skins:</h4>
+    <ul id="skinsList">
+      <li>No Skin</li>
+    </ul>
+    <button id="equipSkinBtn" disabled>Equip Selected Skin</button>
+  </div>
+
+  <div class="footer">
+    © 2025 Robert Games | Dedicated to the memory of Robert Gracin
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
