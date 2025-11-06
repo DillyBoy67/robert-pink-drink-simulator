@@ -2,128 +2,84 @@ body {
   background: linear-gradient(135deg, #ffb6c1, #ff6f91);
   font-family: Comic Sans MS, sans-serif;
   text-align: center;
-  color: #fff;
-  margin: 0;
-  padding: 0;
+  color: #333;
+  user-select: none;
 }
 
-h1 {
-  margin-top: 30px;
-  font-size: 2.5em;
-  text-shadow: 2px 2px #00000055;
-}
-
-.game-container {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(6px);
-  width: 400px;
-  max-width: 90%;
-  margin: 30px auto;
-  border-radius: 20px;
+#gameBox {
+  background: rgba(255,255,255,0.8);
+  width: 300px;
+  margin: 60px auto;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  position: relative;
-}
-
-img {
-  width: 150px;
   border-radius: 15px;
-  border: 3px solid #fff;
-  margin-bottom: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
-#drinkInput {
+input, button {
+  margin: 5px;
   padding: 10px;
-  width: 80%;
-  font-size: 1.2em;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
-  outline: none;
-  text-align: center;
-}
-
-#timer, #score {
-  font-size: 1.4em;
-  margin: 10px 0;
+  font-size: 16px;
 }
 
 button {
-  background: #ff4f7b;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  font-size: 1em;
-  border-radius: 10px;
   cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.3s;
+  background-color: #ff8fab;
+  color: white;
+  transition: 0.3s;
 }
 
 button:hover {
-  background: #ff1e56;
+  background-color: #ff6f91;
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.shop {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(6px);
-  width: 400px;
-  max-width: 90%;
-  margin: 20px auto;
-  border-radius: 20px;
-  padding: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-}
-
-.footer {
-  font-size: 0.9em;
-  margin-top: 30px;
-  opacity: 0.8;
-}
-
-/* Time Stop UI */
-.time-stop-container {
+#timeStopContainer {
   position: absolute;
-  top: 50%;
-  right: -200px;
-  transform: translateY(-50%);
-  text-align: left;
-  width: 180px;
+  right: 50px;
+  top: 80px;
+  text-align: center;
+  z-index: 3;
 }
 
-.time-stop-container h3 {
-  margin-bottom: 5px;
-}
-
-.time-stop-container button {
-  width: 100%;
-  margin-top: 5px;
-}
-
-/* Skin Menu - bottom-left */
-#skinMenuContainer {
+#skinMenu {
   position: fixed;
   bottom: 20px;
   left: 20px;
   text-align: left;
-  width: 200px;
+  z-index: 5;
 }
 
-#skinMenuContainer h4 {
-  margin: 5px 0;
+#coinCounter {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.8);
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-size: 18px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
 
-#skinMenuContainer ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+#drinkImg {
+  width: 100px;
+  height: 100px;
+  background-color: pink;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  transition: filter 0.3s ease;
 }
 
-#skinMenuContainer li {
-  cursor: pointer;
-  margin-bottom: 3px;
+#resetBtn {
+  background-color: #555;
+  color: white;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+#resetBtn:hover {
+  background-color: #222;
 }
