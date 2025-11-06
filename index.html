@@ -1,45 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Robert "Drink" Simulator</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div id="coinCounter">💰 Coins: <span id="coinCount">0</span></div>
-
-  <div id="gameBox">
-    <div id="drinkImg"></div>
-    <input type="text" id="drinkInput" placeholder="Type 'Drink'" autocomplete="off" />
-    <div>
-      <button id="startBtn">Start Game</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Robert "Drink" Simulator</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="coinCounter">
+      💰 Coins: <span id="coinCount">0</span>
     </div>
 
-    <p>Time Left: <span id="timer">60</span>s</p>
-    <p>Score: <span id="score">0</span></p>
-    <p>Points: <span id="points">0</span></p>
+    <div id="gameBox">
+      <div id="drinkImg"></div>
+      <input
+        type="text"
+        id="drinkInput"
+        placeholder="Type 'Drink'"
+        autocomplete="off"
+      />
+      <div>
+        <button id="startBtn">Start Game</button>
+      </div>
 
-    <div>
-      <button id="addSecondBtn">+1 Second (5 pts)</button>
-      <button id="addPointBtn">+1 Point/Drink (25 pts)</button>
+      <p>Time Left: <span id="timer">60</span>s</p>
+      <p>Score: <span id="score">0</span></p>
+      <p>Points: <span id="points">0</span></p>
+
+      <div>
+        <button id="addSecondBtn">+1 Second (5 pts)</button>
+        <button id="addPointBtn">+1 Point/Drink (25 pts)</button>
+      </div>
+
+      <button id="resetBtn">🗑️ Reset Progress</button>
     </div>
 
-    <button id="resetBtn">🗑️ Reset Progress</button>
-  </div>
+    <div id="timeStopContainer">
+      <h3>🕒 Time Stop</h3>
+      <button id="buyTimeStopBtn">Buy Time Stop (150 pts)</button>
+      <button id="activateTimeStopBtn">Activate</button>
+      <p>Level: <span id="timeStopLevel">0</span></p>
+    </div>
 
-  <div id="timeStopContainer">
-    <h3>🕒 Time Stop</h3>
-    <button id="buyTimeStopBtn">Buy Time Stop (150 pts)</button>
-    <button id="activateTimeStopBtn">Activate</button>
-    <p>Level: <span id="timeStopLevel">0</span></p>
-  </div>
+    <div id="skinMenu">
+      <button id="gambleSkinBtn">🎰 Gamble for Skin (1000 pts)</button>
+      <div id="skinList"></div>
+    </div>
 
-  <div id="skinMenu">
-    <button id="gambleSkinBtn">🎰 Gamble for Skin (1000 pts)</button>
-    <div id="skinList"></div>
-  </div>
-
-  <script src="script.js"></script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
