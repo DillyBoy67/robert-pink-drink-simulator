@@ -1,221 +1,201 @@
-// ====================== GAME VARIABLES ======================
-let baseTime = 60;
-let timeLeft = baseTime;
+// ====== Persistent Variables ======
+let points = parseInt(localStorage.getItem('points')) || 0;
+let coins = parseInt(localStorage.getItem('coins')) || 0;
+let timeStopLevel = parseInt(localStorage.getItem('timeStopLevel')) || 0;
+let unlockedSkins = JSON.parse(localStorage.getItem('unlockedSkins')) || [];
+let equippedSkin = localStorage.getItem('equippedSkin') || "default";
+let extraSeconds = parseInt(localStorage.getItem('extraSeconds')) || 0;
+let extraPoints = parseInt(localStorage.getItem('extraPoints')) || 0;
+
+// ====== Game Variables ======
+let timer = 60;
 let score = 0;
-let points = 0;
-let timer;
 let gameActive = false;
-let bonusSeconds = 0;
-let pointsPerDrink = 1;
-let canType = true;
-let timePaused = false;
-
-// Time Stop
-let timeStopLevel = 0;
-let timeStopBaseCost = 150;
-let timeStopDuration = 0;
+let cooldown = false;
+const timeStopBaseCost = 150;
 let timeStopActive = false;
+let drinkImg = document.getElementById("drinkImg");
+let body = document.body;
 
-// Skins
-let skins = [
-  {name: "Dio Roberto", unlocked: false}
-];
-let selectedSkin = null;
-let activeSkin = null;
+// ====== DOM Elements ======
+const startBtn = document.getElementById("startBtn");
+const drinkInput = document.getElementById("drinkInput");
+const timerDisplay = document.getElementById("timer");
+const scoreDisplay = document.getElementById("score");
+const pointDisplay = document.getElementById("points");
+const addSecondBtn = document.getElementById("addSecondBtn");
+const addPointBtn = document.getElementById("addPointBtn");
+const buyTimeStopBtn = document.getElementById("buyTimeStopBtn");
+const activateTimeStopBtn = document.getElementById("activateTimeStopBtn");
+const timeStopLevelDisplay = document.getElementById("timeStopLevel");
+const gambleSkinBtn = document.getElementById("gambleSkinBtn");
+const skinList = document.getElementById("skinList");
+const coinCount = document.getElementById("coinCount");
+const resetBtn = document.getElementById("resetBtn");
 
-// ====================== ELEMENTS ======================
-const timerDisplay = document.getElementById('timer');
-const scoreDisplay = document.getElementById('score');
-const input = document.getElementById('drinkInput');
-const startBtn = document.getElementById('startBtn');
-const addSecondBtn = document.getElementById('addSecondBtn');
-const addPointBtn = document.getElementById('addPointBtn');
-const buyTimeStopBtn = document.getElementById('buyTimeStopBtn');
-const activateTimeStopBtn = document.getElementById('activateTimeStopBtn');
-const timeStopInfo = document.getElementById('timeStopInfo');
-const gambleSkinBtn = document.getElementById('gambleSkinBtn');
-const skinsList = document.getElementById('skinsList');
-const equipSkinBtn = document.getElementById('equipSkinBtn');
-const drinkImg = document.getElementById('drinkImg');
+// ====== Save Progress ======
+function saveProgress() {
+  localStorage.setItem('points', points);
+  localStorage.setItem('coins', coins);
+  localStorage.setItem('timeStopLevel', timeStopLevel);
+  localStorage.setItem('unlockedSkins', JSON.stringify(unlockedSkins));
+  localStorage.setItem('equippedSkin', equippedSkin);
+  localStorage.setItem('extraSeconds', extraSeconds);
+  localStorage.setItem('extraPoints', extraPoints);
+}
 
-// ====================== EVENTS ======================
-startBtn.addEventListener('click', startGame);
-input.addEventListener('input', handleInput);
-addSecondBtn.addEventListener('click', buySecond);
-addPointBtn.addEventListener('click', buyPointUpgrade);
-buyTimeStopBtn.addEventListener('click', buyTimeStop);
-activateTimeStopBtn.addEventListener('click', activateTimeStop);
-gambleSkinBtn.addEventListener('click', gambleSkin);
-equipSkinBtn.addEventListener('click', equipSkin);
+// ====== Reset Progress ======
+resetBtn.onclick = () => {
+  if (confirm("⚠️ Are you sure you want to reset all progress?")) {
+    localStorage.clear();
+    points = 0;
+    coins = 0;
+    timeStopLevel = 0;
+    unlockedSkins = [];
+    equippedSkin = "default";
+    extraSeconds = 0;
+    extraPoints = 0;
+    updateDisplay();
+  }
+};
 
-// DISABLE COPY/PASTE
-input.addEventListener('paste', e=>e.preventDefault());
-input.addEventListener('copy', e=>e.preventDefault());
-input.addEventListener('cut', e=>e.preventDefault());
-input.addEventListener('contextmenu', e=>e.preventDefault());
-
-// ====================== GAME FUNCTIONS ======================
-function startGame() {
-  score = 0;
-  timeLeft = baseTime + bonusSeconds;
-  gameActive = true;
-  input.disabled = false;
-  input.value = '';
-  input.focus();
-  scoreDisplay.textContent = "Score: 0";
-  timerDisplay.textContent = "⏰ Time: " + timeLeft;
-  startBtn.disabled = true;
-  buyTimeStopBtn.disabled = true;
+// ====== Update Display ======
+function updateDisplay() {
+  pointDisplay.textContent = points;
+  scoreDisplay.textContent = score;
+  timerDisplay.textContent = timer;
+  timeStopLevelDisplay.textContent = timeStopLevel;
+  coinCount.textContent = coins;
   updateButtons();
+  updateSkinMenu();
+  applySkin();
+}
 
-  timer = setInterval(() => {
-    if (!timePaused) {
-      timeLeft--;
-      timerDisplay.textContent = "⏰ Time: " + timeLeft;
-      if (timeLeft <= 0) endGame();
+// ====== Game Logic ======
+startBtn.onclick = () => {
+  if (gameActive) return;
+  score = 0;
+  timer = 60 + extraSeconds;
+  gameActive = true;
+  drinkInput.disabled = false;
+  drinkInput.value = "";
+  drinkInput.focus();
+  const interval = setInterval(() => {
+    if (!timeStopActive) timer--;
+    timerDisplay.textContent = timer;
+    if (timer <= 0) {
+      clearInterval(interval);
+      gameActive = false;
+      drinkInput.disabled = true;
+      points += score;
+      coins += Math.floor(score / 5);
+      saveProgress();
+      updateDisplay();
     }
   }, 1000);
-}
+};
 
-function handleInput() {
-  if (!gameActive || !canType) return;
-  const value = input.value.trim().toLowerCase();
-  if (value === 'drink') {
-    score += pointsPerDrink;
-    scoreDisplay.textContent = "Score: " + score;
-    input.value = '';
-    canType = false;
-    setTimeout(()=>canType=true,200);
+drinkInput.addEventListener("input", () => {
+  if (!gameActive || cooldown) return;
+  if (drinkInput.value.toLowerCase() === "drink") {
+    score += 1 + extraPoints;
+    drinkInput.value = "";
+    cooldown = true;
+    setTimeout(() => cooldown = false, 150);
+    updateDisplay();
   }
-}
+});
 
-function endGame() {
-  clearInterval(timer);
-  gameActive = false;
-  input.disabled = true;
-  startBtn.disabled = false;
-  buyTimeStopBtn.disabled = false;
-  timerDisplay.textContent = "⏰ Time's up!";
-  points += score;
-  alert(`You typed 'drink' ${score} times!\nYou earned ${score} points!\nTotal points: ${points}`);
-  saveGame();
-  updateButtons();
-}
+// ====== Upgrades ======
+addSecondBtn.onclick = () => {
+  if (points >= 5) {
+    points -= 5;
+    extraSeconds++;
+    saveProgress();
+    updateDisplay();
+  }
+};
 
-function buySecond() { if(points>=5){points-=5; bonusSeconds++; alert(`+1 second! Total bonus: ${bonusSeconds}`); saveGame(); updateButtons();} }
-function buyPointUpgrade() { if(points>=25){points-=25; pointsPerDrink++; alert(`+${pointsPerDrink} points per drink!`); saveGame(); updateButtons();} }
+addPointBtn.onclick = () => {
+  if (points >= 25) {
+    points -= 25;
+    extraPoints++;
+    saveProgress();
+    updateDisplay();
+  }
+};
 
-function buyTimeStop() {
-  const cost = timeStopBaseCost*(timeStopLevel+1);
-  if(gameActive) return alert("Can't buy during a round!");
-  if(points>=cost){
-    points-=cost;
+// ====== Time Stop ======
+buyTimeStopBtn.onclick = () => {
+  const cost = timeStopBaseCost * (timeStopLevel + 1);
+  if (points >= cost && !gameActive) {
+    points -= cost;
     timeStopLevel++;
-    timeStopDuration=5*timeStopLevel;
-    alert(`Time Stop upgraded to Level ${timeStopLevel}! Duration: ${timeStopDuration}s`);
-    saveGame();
-    updateButtons();
-    updateTimeStopUI();
-  } else alert(`Need ${cost} points to buy/upgrade Time Stop!`);
-}
+    saveProgress();
+    updateDisplay();
+  }
+};
 
-function activateTimeStop() {
-  if(!gameActive || timeStopLevel===0 || timeStopActive) return;
-  timePaused=true;
-  timeStopActive=true;
-  if(activeSkin==="Dio Roberto") document.body.style.filter="grayscale(100%)";
-  activateTimeStopBtn.disabled=true;
-  setTimeout(()=>{
-    timePaused=false;
-    timeStopActive=false;
-    if(activeSkin==="Dio Roberto") applySkin(); // revert color
-    activateTimeStopBtn.disabled=false;
-  }, timeStopDuration*1000);
-}
+activateTimeStopBtn.onclick = () => {
+  if (timeStopLevel === 0 || !gameActive || timeStopActive) return;
+  timeStopActive = true;
+  const stopDuration = 5000 + (timeStopLevel - 1) * 5000;
+  if (equippedSkin === "dio") body.style.filter = "grayscale(100%)";
+  setTimeout(() => {
+    timeStopActive = false;
+    if (equippedSkin === "dio") body.style.filter = "none";
+  }, stopDuration);
+};
 
-// ====================== SKINS ======================
-function gambleSkin() {
-  if(points<1000) return alert("Need 1000 points to gamble!");
-  if(timeStopLevel<5) return alert("Time Stop level 5 required to gamble for Dio Roberto!");
-  points-=1000;
-  skins[0].unlocked=true;
-  alert("You unlocked the skin: Dio Roberto!");
-  saveGame();
-  updateSkinMenu();
-  updateButtons();
-}
-
+// ====== Skins ======
 function updateSkinMenu() {
-  skinsList.innerHTML='';
-  skins.forEach((skin,index)=>{
-    const li=document.createElement('li');
-    li.textContent=skin.name+(skin.unlocked?" ✅":" ❌");
-    if(skin.unlocked){
-      li.style.cursor='pointer';
-      li.onclick=()=>{ selectedSkin=index; equipSkinBtn.disabled=false; }
-    }
-    skinsList.appendChild(li);
+  skinList.innerHTML = "<h4>🎨 Skins</h4>";
+  unlockedSkins.forEach(skin => {
+    const btn = document.createElement("button");
+    btn.textContent = skin === "dio" ? "Dio Roberto" : skin;
+    btn.onclick = () => {
+      equippedSkin = skin;
+      saveProgress();
+      applySkin();
+      updateDisplay();
+    };
+    if (equippedSkin === skin) btn.style.backgroundColor = "gold";
+    skinList.appendChild(btn);
   });
 }
 
-function equipSkin() {
-  if(selectedSkin===null) return;
-  activeSkin=skins[selectedSkin].name;
-  alert(`Equipped: ${activeSkin}`);
-  applySkin();
-  saveGame();
-}
+gambleSkinBtn.onclick = () => {
+  if (points >= 1000 && timeStopLevel >= 5) {
+    points -= 1000;
+    const chance = Math.random();
+    if (chance < 0.25 && !unlockedSkins.includes("dio")) {
+      unlockedSkins.push("dio");
+      alert("✨ You unlocked Dio Roberto!");
+    } else {
+      alert("❌ No skin unlocked this time.");
+    }
+    saveProgress();
+    updateDisplay();
+  }
+};
 
-function applySkin(){
-  if(activeSkin==="Dio Roberto"){
-    document.body.style.background="linear-gradient(135deg, #ffff70, #ffeb3b)";
-    drinkImg.style.filter="hue-rotate(45deg)";
+function applySkin() {
+  if (equippedSkin === "dio") {
+    body.style.background = "linear-gradient(135deg, #ffeb3b, #fbc02d)";
+    drinkImg.style.backgroundColor = "yellow";
   } else {
-    document.body.style.background="linear-gradient(135deg, #ffb6c1, #ff6f91)";
-    drinkImg.style.filter="hue-rotate(0deg)";
+    body.style.background = "linear-gradient(135deg, #ffb6c1, #ff6f91)";
+    drinkImg.style.backgroundColor = "pink";
   }
 }
 
-// ====================== LOCAL STORAGE ======================
-function saveGame(){
-  const data={
-    points,
-    bonusSeconds,
-    pointsPerDrink,
-    timeStopLevel,
-    skins: skins.map(s=>s.unlocked),
-    activeSkin
-  };
-  localStorage.setItem('robertDrinkSave', JSON.stringify(data));
+function updateButtons() {
+  addSecondBtn.disabled = points < 5;
+  addPointBtn.disabled = points < 25;
+  buyTimeStopBtn.disabled = points < 150 * (timeStopLevel + 1) || gameActive;
+  activateTimeStopBtn.disabled = timeStopLevel === 0 || !gameActive;
+  gambleSkinBtn.disabled = points < 1000 || timeStopLevel < 5;
 }
 
-function loadGame(){
-  const data = JSON.parse(localStorage.getItem('robertDrinkSave'));
-  if(!data) return;
-  points = data.points||0;
-  bonusSeconds = data.bonusSeconds||0;
-  pointsPerDrink = data.pointsPerDrink||1;
-  timeStopLevel = data.timeStopLevel||0;
-  data.skins.forEach((unlocked,i)=>skins[i].unlocked=unlocked);
-  activeSkin = data.activeSkin||null;
-  applySkin();
-  updateSkinMenu();
-  updateButtons();
-}
-
-function updateButtons(){
-  addSecondBtn.disabled = points<5;
-  addPointBtn.disabled = points<25;
-  buyTimeStopBtn.disabled = points<timeStopBaseCost*(timeStopLevel+1)||gameActive;
-  activateTimeStopBtn.disabled = timeStopLevel===0||!gameActive;
-  gambleSkinBtn.disabled = points<1000 || timeStopLevel<5;
-  equipSkinBtn.disabled = selectedSkin===null;
-}
-
-function updateTimeStopUI(){
-  const nextCost = timeStopBaseCost*(timeStopLevel+1);
-  timeStopInfo.textContent=`Level: ${timeStopLevel} | Cost: ${nextCost} pts`;
-}
-
-// Load on start
-window.onload = loadGame;
+// ====== Initialize ======
+updateDisplay();
