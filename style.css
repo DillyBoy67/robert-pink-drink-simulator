@@ -1,23 +1,26 @@
 body {
   background: linear-gradient(135deg, #ffb6c1, #ff6f91);
-  font-family: Comic Sans MS, sans-serif;
+  font-family: "Comic Sans MS", sans-serif;
   text-align: center;
   color: #333;
   user-select: none;
+  margin: 0;
+  padding: 0;
 }
 
 #gameBox {
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   width: 300px;
   margin: 60px auto;
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 2;
 }
 
-input, button {
+input,
+button {
   margin: 5px;
   padding: 10px;
   border-radius: 8px;
@@ -56,11 +59,11 @@ button:hover {
   position: fixed;
   top: 10px;
   right: 10px;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   padding: 10px 15px;
   border-radius: 10px;
   font-size: 18px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 #drinkImg {
@@ -70,6 +73,8 @@ button:hover {
   border-radius: 50%;
   margin-bottom: 10px;
   transition: filter 0.3s ease;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #resetBtn {
