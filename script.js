@@ -1,4 +1,4 @@
-// ====== Persistent Variables ======
+// ====== Load Persistent Data ======
 let points = parseInt(localStorage.getItem('points')) || 0;
 let coins = parseInt(localStorage.getItem('coins')) || 0;
 let timeStopLevel = parseInt(localStorage.getItem('timeStopLevel')) || 0;
@@ -12,10 +12,8 @@ let timer = 60;
 let score = 0;
 let gameActive = false;
 let cooldown = false;
-const timeStopBaseCost = 150;
 let timeStopActive = false;
-let drinkImg = document.getElementById("drinkImg");
-let body = document.body;
+const timeStopBaseCost = 150;
 
 // ====== DOM Elements ======
 const startBtn = document.getElementById("startBtn");
@@ -32,8 +30,10 @@ const gambleSkinBtn = document.getElementById("gambleSkinBtn");
 const skinList = document.getElementById("skinList");
 const coinCount = document.getElementById("coinCount");
 const resetBtn = document.getElementById("resetBtn");
+const body = document.body;
+const drinkImg = document.getElementById("drinkImg");
 
-// ====== Save Progress ======
+// ====== Save Data ======
 function saveProgress() {
   localStorage.setItem('points', points);
   localStorage.setItem('coins', coins);
@@ -45,7 +45,7 @@ function saveProgress() {
 }
 
 // ====== Reset Progress ======
-resetBtn.onclick = () => {
+resetBtn.addEventListener("click", () => {
   if (confirm("⚠️ Are you sure you want to reset all progress?")) {
     localStorage.clear();
     points = 0;
@@ -55,9 +55,11 @@ resetBtn.onclick = () => {
     equippedSkin = "default";
     extraSeconds = 0;
     extraPoints = 0;
+    score = 0;
+    timer = 60;
     updateDisplay();
   }
-};
+});
 
 // ====== Update Display ======
 function updateDisplay() {
@@ -71,7 +73,7 @@ function updateDisplay() {
   applySkin();
 }
 
-// ====== Game Logic ======
+// ====== Game ======
 startBtn.onclick = () => {
   if (gameActive) return;
   score = 0;
@@ -80,6 +82,7 @@ startBtn.onclick = () => {
   drinkInput.disabled = false;
   drinkInput.value = "";
   drinkInput.focus();
+
   const interval = setInterval(() => {
     if (!timeStopActive) timer--;
     timerDisplay.textContent = timer;
@@ -139,12 +142,14 @@ buyTimeStopBtn.onclick = () => {
 activateTimeStopBtn.onclick = () => {
   if (timeStopLevel === 0 || !gameActive || timeStopActive) return;
   timeStopActive = true;
-  const stopDuration = 5000 + (timeStopLevel - 1) * 5000;
+  const duration = 5000 + (timeStopLevel - 1) * 5000;
+
   if (equippedSkin === "dio") body.style.filter = "grayscale(100%)";
+
   setTimeout(() => {
     timeStopActive = false;
     if (equippedSkin === "dio") body.style.filter = "none";
-  }, stopDuration);
+  }, duration);
 };
 
 // ====== Skins ======
@@ -156,7 +161,6 @@ function updateSkinMenu() {
     btn.onclick = () => {
       equippedSkin = skin;
       saveProgress();
-      applySkin();
       updateDisplay();
     };
     if (equippedSkin === skin) btn.style.backgroundColor = "gold";
@@ -176,6 +180,8 @@ gambleSkinBtn.onclick = () => {
     }
     saveProgress();
     updateDisplay();
+  } else if (timeStopLevel < 5) {
+    alert("❗ You need Time Stop Level 5 to unlock Dio Roberto!");
   }
 };
 
@@ -192,7 +198,7 @@ function applySkin() {
 function updateButtons() {
   addSecondBtn.disabled = points < 5;
   addPointBtn.disabled = points < 25;
-  buyTimeStopBtn.disabled = points < 150 * (timeStopLevel + 1) || gameActive;
+  buyTimeStopBtn.disabled = points < (150 * (timeStopLevel + 1)) || gameActive;
   activateTimeStopBtn.disabled = timeStopLevel === 0 || !gameActive;
   gambleSkinBtn.disabled = points < 1000 || timeStopLevel < 5;
 }
